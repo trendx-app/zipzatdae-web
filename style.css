@@ -189,3 +189,23 @@ tfoot th, tfoot td { font-weight: 600; border-top: 2px solid var(--line); }
 .src-list a { word-break: break-all; }
 .legacy-list { padding-left: 1.2em; font-size: .9rem; }
 .model-col { color: var(--model); }
+
+/* 사각지대 — 시·도 접기 표 · 지역명 줄바꿈 0 · 행 높이 낮게(360px 에서 페이지가 수십만 px 가 되던 것 — 2026-10-06) */
+.gap-table thead th { white-space: normal; word-break: keep-all; }
+.gap-table tbody th { white-space: nowrap; }
+.gap-table th, .gap-table td { padding: 2px 6px; vertical-align: middle; }
+.gap-table .sido-row th, .gap-table .sido-row td { background: var(--bar-track); font-weight: 600; }
+.gap-table .sgg-row th { padding-left: 14px; }
+.fold-btn, .cell-btn {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0; margin: 0; border: none; background: none;
+  font: inherit; color: var(--primary); cursor: pointer; white-space: nowrap; text-align: left;
+}
+.cell-btn { text-decoration: underline; text-underline-offset: 3px; }
+.fold-btn::before { content: ""; width: 0; height: 0; border-style: solid; border-width: 5px 0 5px 7px; border-color: transparent transparent transparent currentColor; transition: transform .15s; }
+.fold-btn[aria-expanded="true"]::before { transform: rotate(90deg); }
+.cell-btn[aria-pressed="true"] { font-weight: 700; }
+@media (prefers-reduced-motion: reduce) { .fold-btn::before { transition: none; } }
+.cx-table { font-size: .85rem; }
+.cx-table th, .cx-table td { padding: 4px 6px; }
+.cx-table thead th { white-space: normal; word-break: keep-all; }
+.cx-table th:first-child { width: 30%; }

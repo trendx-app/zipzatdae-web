@@ -171,6 +171,24 @@ export function gapTable(gapDoc) {
     .map((home) => ({ home, ...m[home] }));
 }
 
+export function gapGroups(gapDoc, regionIdx = null) {
+  const out = [];
+  for (const r of gapTable(gapDoc)) {
+    const sidoCode = r.home.slice(0, 2);
+    let g = out.length ? out[out.length - 1] : null;
+    if (!g || g.sidoCode !== sidoCode) {
+      g = { sidoCode, sido: null, rows: [], complexes: 0, rail_out: 0, gap: 0 };
+      out.push(g);
+    }
+    const reg = regionIdx ? regionIdx.get(r.home) : null;
+    if (g.sido === null && reg && reg.sido) g.sido = reg.sido;
+    g.rows.push(r);
+    for (const k of ['complexes', 'rail_out', 'gap']) g[k] = g[k] === null || r[k] === null ? null : g[k] + r[k];
+  }
+  for (const g of out) if (g.sido === null) g.sido = g.sidoCode;
+  return out;
+}
+
 export function isGapComplex(row, params) {
   const railOut = row.rail_m === null || row.rail_m > params.jikjuGapRailM;
   const busOut = row.bus_m === null || row.bus_m > params.jikjuGapBusM;

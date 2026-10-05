@@ -1,11 +1,16 @@
 import { JIKJU_PUBLIC_PATH } from './core/jikju.js';
 
+export function paramsUrl(moduleUrl) {
+  const repoLayout = /\/web\/config\.js$/.test(new URL(moduleUrl).pathname);
+  return new URL(repoLayout ? '../core-spec/params.json' : 'params.json', moduleUrl).href;
+}
+
 export const CONFIG = Object.freeze({
   SUPABASE_URL: 'https://kgueaxstmhysfayvsyzs.supabase.co',
   POINTER_PATH: 'jikju/current.json',
   KNOWN_FORMATS: Object.freeze([1]),
   POINTER_TTL_MS: 30 * 60 * 1000,
-  PARAMS_URLS: Object.freeze(['./params.json', '../params.json', '../core-spec/params.json', '../../core-spec/params.json']),
+  PARAMS_URLS: Object.freeze([paramsUrl(import.meta.url)]),
   SNAPSHOT_QUERY: 'snapshot',
 });
 
