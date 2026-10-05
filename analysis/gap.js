@@ -1,4 +1,4 @@
-import { startPage, loadSnapshot, firstWork } from '../app/page.js';
+import { startPage, loadSnapshot, firstWork, snapshotFor } from '../app/page.js';
 import { workPicker, rememberWork, setWorkQuery } from '../app/shell.js';
 import { t } from '../app/i18n.js';
 import { h, add, clear, byId, status, sectionHead } from '../app/ui.js';
@@ -64,8 +64,10 @@ async function main(ctx) {
     renderGap();
     S.list.replaceChildren(status('loading', t('web_loading')));
     let homesDoc;
+    let snapDoc;
     try {
       homesDoc = await ctx.file(`homes/${home}`);
+      snapDoc = await snapshotFor(ctx, home);
     } catch {
       S.list.replaceChildren(status('error', t('jikju_load_error'), { onRetry: () => pickHome(home), retryLabel: t('web_retry') }));
       return;
@@ -73,7 +75,7 @@ async function main(ctx) {
     if (state.home !== home) return;
     clear(S.list);
     if (homesDoc === null) return;
-    const rows = V.gapComplexes({ homesDoc, snapDoc: ctx.snap, params });
+    const rows = V.gapComplexes({ homesDoc, snapDoc, params });
     const rail = (r) => (r.rail_m === null || r.rail_m === undefined ? t('jikju_row_rail_none') : t('jikju_row_rail_format', r.rail_name ?? '', r.rail_lines ?? '', dist(r.rail_m)));
     const bus = (r) => (r.bus_m === null || r.bus_m === undefined ? t('jikju_row_bus_none') : t('jikju_row_bus_format', dist(r.bus_m)));
     const thead = h('thead', null, h('tr', null,

@@ -54,6 +54,18 @@ export async function loadSnapshot(ctx) {
   return snap;
 }
 
+export async function snapshotFor(ctx, home) {
+  const idx = ctx.snap;
+  if (!idx) return null;
+  if (idx.packs) return idx;
+  ctx.snapShards = ctx.snapShards || new Map();
+  if (ctx.snapShards.has(home)) return ctx.snapShards.get(home);
+  const name = D.snapshotShardName(idx, home);
+  const doc = (name && (await ctx.file(name))) || { home, packs: [] };
+  ctx.snapShards.set(home, doc);
+  return doc;
+}
+
 export function firstWork(ctx) {
   return initialWork(ctx.works, location.search, (code) => ctx.store.has(`flow/work/${code}`));
 }

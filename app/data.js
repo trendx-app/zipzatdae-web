@@ -115,6 +115,11 @@ export function snapshotComplexes(snapDoc, sggs) {
   return out;
 }
 
+export function snapshotShardName(snapIdx, home) {
+  const shards = snapIdx && Array.isArray(snapIdx.shards) ? snapIdx.shards : [];
+  return shards.includes(home) ? `web/snapshot/${home}` : null;
+}
+
 export function complexKey(kind, complexId) {
   return `${kind ?? '*'}:${complexId}`;
 }

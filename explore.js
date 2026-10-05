@@ -1,4 +1,4 @@
-import { startPage, loadSnapshot, firstWork } from './app/page.js';
+import { startPage, loadSnapshot, firstWork, snapshotFor } from './app/page.js';
 import { workPicker, rememberWork, setWorkQuery } from './app/shell.js';
 import { t } from './app/i18n.js';
 import { h, add, clear, byId, chips, bars, status, sectionHead } from './app/ui.js';
@@ -172,15 +172,17 @@ async function main(ctx) {
       return;
     }
     let homesDoc;
+    let snapDoc;
     try {
       homesDoc = await ctx.file(`homes/${home}`);
+      snapDoc = await snapshotFor(ctx, home);
     } catch {
       add(box, status('error', t('jikju_price_error'), { onRetry: () => renderList(box), retryLabel: t('web_retry') }));
       return;
     }
     if (state.home !== home || homesDoc === null) return;
     const list = V.complexList({
-      homesDoc, snapDoc: ctx.snap, deal: state.deal, kind: state.kind, budgetManwon: V.BUDGETS[state.deal][state.budgetIdx], J, workPoint: V.pointOf(state.work, ctx.regionIdx),
+      homesDoc, snapDoc, deal: state.deal, kind: state.kind, budgetManwon: V.BUDGETS[state.deal][state.budgetIdx], J, workPoint: V.pointOf(state.work, ctx.regionIdx),
     });
     if (list.total === 0 || list.priced === 0 && list.kindTotal === list.total && list.total > 0 && list.rows.every((r) => !r.inSnapshot)) {
       add(box, status('empty', t('jikju_rec_no_complexes')));
